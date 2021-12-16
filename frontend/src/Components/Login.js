@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Form, Card, Button, Alert } from "react-bootstrap";
 import { Link, useNavigate } from 'react-router-dom'
 import { UserContext } from '../Context'
@@ -11,32 +11,43 @@ export default function Login() {
     const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate()
 
+    useEffect(async () => {
+        const loggedUser = localStorage.getItem("user_id")
+        console.log(loggedUser);
+        if (loggedUser) {
+            await axios.get(`http://localhost:8000/user/${loggedUser}`)
+                .then(res => {
+                    setUser(res.data)
+                    navigate('/step')
+                })
+        }
+    }, [])
+
     async function submitFormData(e) {
         e.preventDefault();
-        if (username === '' && password === ''){
+        if (username === '' && password === '') {
             alert('username and password required')
             return;
         }
-        await axios.post('http://localhost:8000/user/login', {'username': username, 'password': password})
+        await axios.post('http://localhost:8000/user/login', { 'username': username, 'password': password })
             .then(res => {
                 setUser(res.data)
-                navigate('/step')
+                localStorage.setItem("user_id", res.data.id)
 
-                localStorage.setItem('username', res.data.username)
+                navigate('/step')
             })
             .catch(err => setIsWarning(true))
-        
     }
 
     return (
         <Card style={{ margin: 100, width: '18rem', marginLeft: 'auto', marginRight: 'auto' }}>
             <Card.Body>
                 <Card.Title className="text-center">Login</Card.Title>
-                { !isWarning? <></> :
-                <Alert className='text-center' variant='warning'>
-                    Invalid Username or Password
-                </Alert>
-                }   
+                {!isWarning ? <></> :
+                    <Alert className='text-center' variant='warning'>
+                        Invalid Username or Password
+                    </Alert>
+                }
                 <Form onSubmit={submitFormData}>
                     <Form.Group className="mb-3">
                         <Form.Label>Username</Form.Label>
@@ -45,7 +56,7 @@ export default function Login() {
                             defaultValue={username}
                             type="text"
                             placeholder="Username"
-                            onChange={e=>setUsername(e.target.value)}
+                            onChange={e => setUsername(e.target.value)}
                         />
                     </Form.Group>
                     <Form.Group className="mb-3">
@@ -55,10 +66,10 @@ export default function Login() {
                             defaultValue={password}
                             type="password"
                             placeholder="Password"
-                            onChange={e=>setPassword(e.target.value)}
+                            onChange={e => setPassword(e.target.value)}
                         />
                     </Form.Group>
-                
+
                     <div className="d-grid gap-2">
                         <Button className="d-grid gap-2" variant="primary" type="submit">
                             Login
@@ -69,7 +80,7 @@ export default function Login() {
                         </p>
                     </div>
                 </Form>
-                
+
             </Card.Body>
         </Card>
     )

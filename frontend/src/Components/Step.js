@@ -7,38 +7,55 @@ import StepThree from './Steps/StepThree'
 import { UserContext } from '../Context'
 
 export default function Step() {
-    const { user, setUser } = useContext(UserContext)
-    const navigate = useNavigate()
-    const state = useLocation()
+  const { user, setUser } = useContext(UserContext)
+  const navigate = useNavigate()
+  const state = useLocation()
 
-    const [step, setStep] = useState(1)
-    const formData = ''
-    const setFormData = ''
+  const [step, setStep] = useState(1)
+  const formData = ''
+  const setFormData = ''
 
-    const nextStep = () => setStep(step + 1)
-    const prevStep = () => setStep(step - 1)
-    
-    const handleInputData = input => e => {
-        const { value } = e.target;
+  const nextStep = () => setStep(step + 1)
+  const prevStep = () => setStep(step - 1)
 
-        setUser(prevState => ({
-        ...prevState,
-        [input]: value
-        }));
+  const handleInputData = input => e => {
+    const { value } = e.target;
+
+    setUser(prevState => ({
+      ...prevState,
+      [input]: value
+    }));
   }
 
   function determineStepNum() {
     (!user.fname || !user.lname) ? setStep(1) :
-    (!user.email) ? setStep(2) :
-    (!user.age) ? setStep(3) :
-    setStep(4)
+      (!user.email) ? setStep(2) :
+        (!user.age) ? setStep(3) :
+          setStep(4)
   }
 
+  useEffect(async () => {
+    const loggedUser = localStorage.getItem("user_id")
+    console.log(loggedUser);
+    if (loggedUser) {
+      await axios.get(`http://localhost:8000/user/${loggedUser}`)
+        .then(res => {
+          setUser(res.data)
+          navigate('/step')
+        })
+    }
+  }, [])
+
   useEffect(() => {
-    console.log(step);
-    console.log(user);
-    if (!user.username){
-        navigate('/')
+    const loggedUser = localStorage.getItem("user_id")
+    if (loggedUser) {
+      await axios.get(`http://localhost:8000/user/${loggedUser}`)
+        .then(res => {
+          setUser(res.data)
+        })
+    }
+    if (!user.username) {
+      navigate('/')
     }
     determineStepNum()
   }, [])
@@ -49,7 +66,7 @@ export default function Step() {
         <div className="App">
           <Container>
             <Row>
-              <Col  md={{ span: 6, offset: 3 }} className="custom-margin">
+              <Col md={{ span: 6, offset: 3 }} className="custom-margin">
                 <StepOne prevStep={prevStep} nextStep={nextStep} handleFormData={handleInputData} values={user} />
               </Col>
             </Row>
@@ -57,33 +74,33 @@ export default function Step() {
         </div>
       )
 
-      case 2:
-        return (
-          <div className="App">
-            <Container>
-              <Row>
-                <Col  md={{ span: 6, offset: 3 }} className="custom-margin">
+    case 2:
+      return (
+        <div className="App">
+          <Container>
+            <Row>
+              <Col md={{ span: 6, offset: 3 }} className="custom-margin">
                 <StepTwo prevStep={prevStep} nextStep={nextStep} handleFormData={handleInputData} values={user} />
-                </Col>
-              </Row>
-            </Container>
-          </div>
-        )
+              </Col>
+            </Row>
+          </Container>
+        </div>
+      )
 
-      case 3:
-        return (
-          <div className="App">
-            <Container>
-              <Row>
-                <Col  md={{ span: 6, offset: 3 }} className="custom-margin">
-                  <StepThree nextStep={nextStep} handleFormData={handleInputData} values={formData} />
-                </Col>
-              </Row>
-            </Container>
-          </div>
-        )
-  
+    case 3:
+      return (
+        <div className="App">
+          <Container>
+            <Row>
+              <Col md={{ span: 6, offset: 3 }} className="custom-margin">
+                <StepThree prevStep={prevStep} nextStep={nextStep} handleFormData={handleInputData} values={formData} />
+              </Col>
+            </Row>
+          </Container>
+        </div>
+      )
+
     default:
-        break
+      break
   }
 }

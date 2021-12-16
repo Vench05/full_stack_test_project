@@ -1,11 +1,12 @@
-FROM node:14-alpine
+FROM node:16.13.1-alpine
 ENV NODE_ENV development
 
-# Add a work directory
+# set work directory
+RUN mkdir -p /app
 WORKDIR /app
 
 # Install dependencies
-COPY package.json .
+COPY ./package.json .
 RUN npm install
 
 # Copy app files

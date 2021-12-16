@@ -7,8 +7,9 @@ from app.crud.user import \
     create_user, \
     get_user_by_username, \
     verify_password, \
-    get_user, \
+    get_user_by_id, \
     update_user_use_case
+
 from app.database import get_db
 
 
@@ -41,9 +42,18 @@ def login(user: UserRequest, db: Session = Depends(get_db)):
 
 @router.put('/{id}/update', response_model=UserResponse, status_code=200)
 def update_user(id: int, user_data: UserUpdateRequest, db: Session = Depends(get_db)):
-    user = get_user(user_id=id, db=db)
+    user = get_user_by_id(user_id=id, db=db)
     if not user:
         raise HTTPException(status_code=404,
                             detail=f'User ID: {id} not found')
 
     return update_user_use_case(id=id, data=user_data, db=db)
+
+
+@router.get('/{id}', response_model=UserResponse, status_code=200)
+def get_user(id: int, db: Session = Depends(get_db)):
+    user = get_user_by_id(user_id=id, db=db)
+    if not user:
+        raise HTTPException(status_code=404,
+                            detail=f'User ID: {id} not found')
+    return user
