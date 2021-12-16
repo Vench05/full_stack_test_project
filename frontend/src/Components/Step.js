@@ -62,7 +62,7 @@ export default function Step() {
           <Container>
             <Row>
               <Col md={{ span: 6, offset: 3 }} className="custom-margin">
-                <StepOne prevStep={prevStep} nextStep={nextStep} handleFormData={handleInputData} values={user} />
+                <StepOne handleLogout={handleLogout} prevStep={prevStep} nextStep={nextStep} handleFormData={handleInputData} values={user} />
               </Col>
             </Row>
           </Container>

@@ -2,7 +2,7 @@ import axios from 'axios';
 import React from 'react'
 import { Form, Card, Button } from "react-bootstrap";
 
-export default function StepTwo({ prevStep, nextStep, handleFormData, values }) {
+export default function StepTwo({ handleLogout, prevStep, nextStep, handleFormData, values }) {
     const submitFormData = (e) => {
         e.preventDefault();
         axios.put(`http://localhost:8000/user/${values.id}/update`, values)
@@ -11,6 +11,9 @@ export default function StepTwo({ prevStep, nextStep, handleFormData, values }) 
     return (
         <div>
             <Card style={{ marginTop: 100 }}>
+                <Card.Header >
+                    <Button variant="danger" onClick={handleLogout} >Logout</Button>
+                </Card.Header>
                 <Card.Body>
                     <Card.Title>Step Two</Card.Title>
                     <Form onSubmit={submitFormData}>

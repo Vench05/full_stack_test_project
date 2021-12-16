@@ -3,7 +3,7 @@ import React from 'react'
 import { Form, Card, Button } from "react-bootstrap";
 
 
-export default function StepOne({ prevStep, nextStep, handleFormData, values }) {
+export default function StepOne({ handleLogout, nextStep, handleFormData, values }) {
     const submitFormData = (e) => {
         e.preventDefault();
         axios.put(`http://localhost:8000/user/${values.id}/update`, values)
@@ -13,6 +13,9 @@ export default function StepOne({ prevStep, nextStep, handleFormData, values }) 
     return (
         <div>
             <Card style={{ marginTop: 100 }}>
+                <Card.Header >
+                    <Button variant="danger" onClick={handleLogout} >Logout</Button>
+                </Card.Header>
                 <Card.Body>
                     <Card.Title>Step One</Card.Title>
                     <Form onSubmit={submitFormData}>
