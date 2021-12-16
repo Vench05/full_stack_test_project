@@ -15,4 +15,5 @@
 got to `http://localhost:3000/`
 It may take a while for first time frontend to start successfully 
 
-
+### If you are in Windows
+You may need to `cd frontend` and `npm install` then rebuild the image `cd ..` `docker-compose up -d --build`
