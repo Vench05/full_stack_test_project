@@ -15,7 +15,7 @@ from app.database import get_db
 router = APIRouter()
 
 
-@router.post('/register', response_model=UserResponse, status_code=200)
+@router.post('/register', response_model=UserResponse, status_code=201)
 def register_user(user: UserRequest, db: Session = Depends(get_db)):
     if get_user_by_username(username=user.username, db=db):
         raise HTTPException(
