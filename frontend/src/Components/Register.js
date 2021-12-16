@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Form, Card, Button, Alert } from "react-bootstrap";
 import { Link, useNavigate } from 'react-router-dom'
+import { UserContext } from '../Context'
 import axios from 'axios'
 
 export default function Register() {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [isWarning, setIsWarning] = useState(false)
+    const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate()
 
     async function submitFormData(e) {
@@ -16,7 +18,11 @@ export default function Register() {
             return;
         }
         await axios.post('http://localhost:8000/user/register', {'username': username, 'password': password})
-            .then(res => navigate('/step', res))
+            .then(res => {
+                setUser(res.data)
+                localStorage.setItem('user_id', res.data.id)
+                navigate('/step')
+            })
             .catch(err => setIsWarning(true))
     }
     

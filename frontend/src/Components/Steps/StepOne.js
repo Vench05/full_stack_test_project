@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React from 'react'
 import { Form, Card, Button } from "react-bootstrap";
 
 
@@ -38,10 +38,8 @@ export default function StepOne({ prevStep, nextStep, handleFormData, values }) 
                                 onChange={handleFormData("lname")}
                             />
                         </Form.Group>
-                        <Button variant="primary">
-                            Prev
-                        </Button>
-                        <Button variant="primary" type="submit">
+                        <Button variant="primary" type="submit"
+                            disabled={(values.fname && values.lname)?false:true}>
                             Next
                         </Button>
                     </Form>

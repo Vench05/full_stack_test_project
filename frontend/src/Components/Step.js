@@ -4,28 +4,35 @@ import { Col, Row, Container } from "react-bootstrap";
 import StepOne from './Steps/StepOne'
 import StepTwo from './Steps/StepTwo'
 import StepThree from './Steps/StepThree'
+import Complete from './Steps/Complete';
 import { UserContext } from '../Context'
+import axios from 'axios';
+
 
 export default function Step() {
   const { user, setUser } = useContext(UserContext)
   const navigate = useNavigate()
-  const state = useLocation()
 
   const [step, setStep] = useState(1)
-  const formData = ''
-  const setFormData = ''
 
   const nextStep = () => setStep(step + 1)
   const prevStep = () => setStep(step - 1)
 
   const handleInputData = input => e => {
-    const { value } = e.target;
+    const { value } = e.target
 
     setUser(prevState => ({
       ...prevState,
       [input]: value
     }));
   }
+
+  const handleLogout = () => {
+    console.log('logout');
+    localStorage.clear()
+    setUser({})
+    navigate('/')
+  };
 
   function determineStepNum() {
     (!user.fname || !user.lname) ? setStep(1) :
@@ -35,18 +42,6 @@ export default function Step() {
   }
 
   useEffect(async () => {
-    const loggedUser = localStorage.getItem("user_id")
-    console.log(loggedUser);
-    if (loggedUser) {
-      await axios.get(`http://localhost:8000/user/${loggedUser}`)
-        .then(res => {
-          setUser(res.data)
-          navigate('/step')
-        })
-    }
-  }, [])
-
-  useEffect(() => {
     const loggedUser = localStorage.getItem("user_id")
     if (loggedUser) {
       await axios.get(`http://localhost:8000/user/${loggedUser}`)
@@ -80,7 +75,7 @@ export default function Step() {
           <Container>
             <Row>
               <Col md={{ span: 6, offset: 3 }} className="custom-margin">
-                <StepTwo prevStep={prevStep} nextStep={nextStep} handleFormData={handleInputData} values={user} />
+                <StepTwo handleLogout={handleLogout} prevStep={prevStep} nextStep={nextStep} handleFormData={handleInputData} values={user} />
               </Col>
             </Row>
           </Container>
@@ -93,7 +88,7 @@ export default function Step() {
           <Container>
             <Row>
               <Col md={{ span: 6, offset: 3 }} className="custom-margin">
-                <StepThree prevStep={prevStep} nextStep={nextStep} handleFormData={handleInputData} values={formData} />
+                <StepThree handleLogout={handleLogout} prevStep={prevStep} nextStep={nextStep} handleFormData={handleInputData} values={user} />
               </Col>
             </Row>
           </Container>
@@ -101,6 +96,16 @@ export default function Step() {
       )
 
     default:
-      break
+      return (
+        <div className="App">
+          <Container>
+            <Row>
+              <Col md={{ span: 6, offset: 3 }} className="custom-margin">
+                <Complete handleLogout={handleLogout} values={user} />
+              </Col>
+            </Row>
+          </Container>
+        </div>
+      )
   }
 }

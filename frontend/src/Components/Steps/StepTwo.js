@@ -1,7 +1,8 @@
+import axios from 'axios';
 import React from 'react'
 import { Form, Card, Button } from "react-bootstrap";
 
-export default function StepTwo({ nextStep, handleFormData, values }) {
+export default function StepTwo({ prevStep, nextStep, handleFormData, values }) {
     const submitFormData = (e) => {
         e.preventDefault();
         axios.put(`http://localhost:8000/user/${values.id}/update`, values)
@@ -24,10 +25,10 @@ export default function StepTwo({ nextStep, handleFormData, values }) {
                                 onChange={handleFormData("email")}
                             />
                         </Form.Group>
-                        <Button variant="primary">
+                        <Button variant="primary" onClick={prevStep} >
                             Prev
                         </Button>
-                        <Button variant="primary" type="submit">
+                        <Button variant="primary" type="submit" disabled={values.email?false:true} >
                             Next
                         </Button>
                     </Form>
