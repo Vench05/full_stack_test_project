@@ -12,3 +12,14 @@ services:
       - ENVIRONMENT=dev
       - TESTING=1
       - DATABASE_URL=sqlite:///./prod.db
+
+  frontend:
+    build: ./frontend
+    command: npm start
+    volumes:
+      - ./frontend:/app
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+      

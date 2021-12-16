@@ -21,6 +21,7 @@ def update_user_use_case(id: int, data: UserUpdateRequest, db: Session):
     user = get_user(user_id=id, db=db)
     for key, value in data.dict().items():
         setattr(user, key, value)
+    db.commit()
     return user
 
 

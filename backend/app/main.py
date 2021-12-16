@@ -6,17 +6,17 @@ from app.database import Base, engine
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 app.include_router(user.router, tags=['Users'], prefix='/user')
 
 
 @app.on_event('startup')
 def startup():
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     Base.metadata.create_all(engine)
